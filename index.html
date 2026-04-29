@@ -2,14 +2,14 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LOGO Junior - Atelier Anagrammes</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="header">
         <h1>🐢 LOGO Junior</h1>
-        <p>1. Ordonne les lettres à droite 🔓 | 2. Trouve le mot dans la grille ✅</p>
+        <p>1. Ordonne les lettres 🔓 | 2. Trouve le mot ✅</p>
     </div>
 
     <div class="main-layout">
@@ -18,6 +18,20 @@
         <div id="word-list">
             <h3>Atelier des mots</h3>
             <ul id="list-items"></ul>
+        </div>
+    </div>
+
+    <div id="final-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="color: #2ecc71;">Félicitations ! 🎉</h2>
+            <p>Tu as déverrouillé et trouvé toutes les primitives.</p>
+            <hr>
+            <div class="feedback-box">
+                <p><strong>Auto-évaluation :</strong></p>
+                <p>Y a-t-il une primitive qui était nouvelle pour toi ? As-tu trouvé sa fonction ?</p>
+                <p class="note">⚠️ Note son nom pour en discuter en classe !</p>
+            </div>
+            <button onclick="location.reload()" class="btn-restart">Rejouer</button>
         </div>
     </div>
 
