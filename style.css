@@ -1,0 +1,69 @@
+:root {
+    --primary: #4361ee;
+    --success: #2ecc71;
+    --error: #ff006e;
+    --bg: #f8f9fa;
+    --dark: #2b2d42;
+    --cell-size: 30px;
+}
+
+body { 
+    font-family: 'Segoe UI', system-ui, sans-serif; 
+    background: var(--bg); color: var(--dark);
+    margin: 0; padding: 10px;
+    display: flex; flex-direction: column; align-items: center;
+}
+
+.header { text-align: center; margin-bottom: 15px; }
+h1 { color: var(--primary); margin: 0; }
+
+.main-layout {
+    display: flex; gap: 30px; justify-content: center; align-items: flex-start;
+}
+
+/* Grille */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(14, var(--cell-size));
+    gap: 4px; background: white; padding: 10px;
+    border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.cell {
+    width: var(--cell-size); height: var(--cell-size);
+    background: #edf2f4; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; font-weight: bold;
+    font-size: 13px; border-radius: 4px; user-select: none;
+}
+
+.cell.selected { background: #fee440; box-shadow: inset 0 0 0 2px #f9c74f; }
+.cell.found { background: var(--success); color: white; cursor: default; }
+
+/* Liste d'Anagrammes */
+#word-list {
+    background: white; padding: 15px; border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05); min-width: 250px;
+}
+
+#list-items { list-style: none; padding: 0; }
+
+.anagram-container {
+    display: flex; align-items: center; margin-bottom: 8px;
+    padding: 8px; background: #f1f3f5; border-radius: 8px;
+}
+
+.scrambled-letters { display: flex; gap: 4px; }
+
+.letter-box {
+    width: 26px; height: 26px; background: var(--primary);
+    color: white; display: flex; align-items: center;
+    justify-content: center; border-radius: 4px; cursor: pointer;
+    font-size: 13px; font-weight: bold; transition: 0.2s;
+}
+
+.letter-box.active { background: var(--error); transform: translateY(-3px); }
+
+.anagram-container.solved .letter-box { background: #4cc9f0; }
+.anagram-container.found-text { background: #d1fae5; opacity: 0.7; }
+
+.status-icon { margin-right: 10px; font-size: 16px; min-width: 25px; }
