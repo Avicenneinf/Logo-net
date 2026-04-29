@@ -1,5 +1,5 @@
 const primitivesData = [
-    { mot: "AV" }, { mot: "VE" }, { mot: "FPOS" }, { mot: "POUR" }, 
+    { mot: "FTORTUE" }, { mot: "REMPLIS" }, { mot: "FPOS" }, { mot: "POUR" }, 
     { mot: "FIN" }, { mot: "NETTOIE" }, { mot: "FCC" }, { mot: "FEPAIS" }, 
     { mot: "CONSOLE" }, { mot: "TORTUE" }, { mot: "EDITEUR" }, 
     { mot: "PROCEDURE" }, { mot: "PARAMETRE" }
@@ -11,7 +11,7 @@ const listElement = document.getElementById('list-items');
 
 let grid = Array(gridSize).fill().map(() => Array(gridSize).fill(''));
 let firstCell = null;
-let solvedWords = new Set(); // Mots dont l'anagramme est rangé
+let solvedWords = new Set(); 
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -22,22 +22,19 @@ function shuffleArray(array) {
 }
 
 function scrambleWord(word) {
-    if (word.length <= 1) return word;
     let scrambled = shuffleArray(word.split('')).join('');
-    return (scrambled === word) ? scrambleWord(word) : scrambled;
+    return (scrambled === word && word.length > 1) ? scrambleWord(word) : scrambled;
 }
 
 function setupGame() {
     const shuffledForList = shuffleArray([...primitivesData]);
-
     shuffledForList.forEach(item => {
         let placed = false;
         let attempts = 0;
-        while (!placed && attempts < 150) {
+        while (!placed && attempts < 200) {
             let dir = Math.random() > 0.5 ? 'H' : 'V';
             let r = Math.floor(Math.random() * gridSize);
             let c = Math.floor(Math.random() * gridSize);
-
             if (canPlace(item.mot, r, c, dir)) {
                 for (let i = 0; i < item.mot.length; i++) {
                     let currR = (dir === 'H') ? r : r + i;
@@ -84,7 +81,6 @@ function createAnagramUI(originalWord) {
             box.className = "letter-box";
             if (selectedIdx === idx) box.classList.add('active');
             box.textContent = char;
-            
             box.onclick = () => {
                 if (solvedWords.has(originalWord)) return;
                 if (selectedIdx === null) {
@@ -156,8 +152,13 @@ function validateWord(word) {
         c.classList.add('found');
     });
     const container = document.getElementById(`container-${word}`);
-    container.classList.add('found-text');
-    container.querySelector('.status-icon').textContent = "✅";
+    if (container) {
+        container.classList.add('found-text');
+        container.querySelector('.status-icon').textContent = "✅";
+    }
+    if (document.querySelectorAll('.anagram-container.found-text').length === primitivesData.length) {
+        setTimeout(() => { document.getElementById('final-modal').style.display = 'block'; }, 800);
+    }
 }
 
 setupGame();
