@@ -1,7 +1,7 @@
 const primitivesData = [
     { mot: "FTORTUE" }, { mot: "REMPLIS" }, { mot: "FPOS" }, { mot: "POUR" }, 
     { mot: "FIN" }, { mot: "NETTOIE" }, { mot: "FCC" }, { mot: "FEPAIS" }, 
-    { mot: "CONSOLE" }, { mot: "TORTUE" }, { mot: "EDITEUR" }, 
+    { mot: "CONSOLE" }, { mot: "ORIGINE" }, { mot: "EDITEUR" }, 
     { mot: "PROCEDURE" }, { mot: "PARAMETRE" }
 ];
 
