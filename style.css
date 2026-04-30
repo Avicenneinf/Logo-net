@@ -1,117 +1,100 @@
 :root {
-    --blue: #4361ee;
-    --green: #2ecc71;
-    --dark: #1a1a2e;
-    --orange: #f39c12;
+    --primary: #2980b9;
+    --success: #27ae60;
+    --highlight: #f1c40f;
+    --dark: #2c3e50;
+    --light: #f4f7f6;
+    --border: #ddd;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+/* --- 1. BASE DE LA PAGE (MODIFIÉ) --- */
 body, html {
-    margin: 0; padding: 0;
-    height: 100%; width: 100%;
-    font-family: 'Segoe UI', sans-serif;
-    background: #eef2f7;
-    overflow-x: hidden; /* Empêche le glissement horizontal */
+    margin: 0; padding: 0; 
+    height: 100%; /* Utilisez % plutôt que vh ici */
+    width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--light); 
+    overflow: hidden; /* Empêche le scroll global du body */
+    position: fixed; /* Force le body à rester en place */
 }
 
-/* Conteneur principal flexible */
-.app-container {
-    display: flex;
-    flex-direction: column; /* Vertical par défaut (Smartphone) */
-    height: 100vh;
+/* --- 2. CONTENEUR PRINCIPAL --- */
+.app-container { 
+    display: flex; 
+    flex-direction: column; 
+    height: 100vh; /* Toute la hauteur de l'écran */
+    width: 100%;
+    overflow: hidden;
 }
 
-/* Passage en mode horizontal pour Tablettes et PC */
 @media (min-width: 768px) {
     .app-container { flex-direction: row; }
-    .workshop-area { width: 350px; border-left: 2px solid #ddd; }
 }
 
-/* Zone de la Grille */
+/* --- 3. ZONE DE LA GRILLE - HAUT (CRITIQUE) --- */
 .grid-area {
-    flex: 1;
-    display: flex;
+    /* Sur mobile/tablette, on fige la hauteur de la grille */
+    height: 55vh; 
+    display: flex; 
     justify-content: center;
-    align-items: center;
-    padding: 10px;
-    background: #ced6e0;
+    align-items: center; 
+    padding: 10px; 
+    background: #dfe6e9;
+    flex: none; /* Empêche la compression */
+    border-bottom: 2px solid var(--border);
+    
+    /* Positionnement fixe activé par JS */
+    position: relative; 
+    z-index: 100; /* Reste au-dessus de tout */
+    width: 100%;
+    top: 0;
+    left: 0;
 }
 
-.letter-grid {
-    display: grid;
-    /* 14 colonnes qui s'adaptent à la largeur de l'écran mobile */
-    grid-template-columns: repeat(14, calc(95vw / 15)); 
-    gap: 3px;
-    background: white;
-    padding: 8px;
-    border-radius: 8px;
+/* Ajustements Desktop */
+@media (min-width: 768px) {
+    .grid-area { height: 100vh; flex: 1; border-bottom: none; position: relative; z-index: 1;}
+}
+
+/* --- LE RESTE DU CSS RESTE INCHANGÉ --- */
+.letter-grid { display: grid; grid-template-columns: repeat(15, calc(90vw / 16)); gap: 2px; background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+@media (min-width: 768px) { .letter-grid { grid-template-columns: repeat(15, 32px); } }
+.cell { aspect-ratio: 1; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; cursor: pointer; touch-action: manipulation; background: white; transition: background 0.1s; }
+@media (min-width: 768px) { .cell { font-size: 16px; } }
+.cell.selected { background: var(--highlight); color: #000; }
+.cell.found { background: var(--success) !important; color: white; }
+
+/* --- 4. ZONE DE L'ATELIER - BAS (MODIFIÉ) --- */
+.workshop-area { 
+    flex: 1; /* Prend tout l'espace restant */
+    padding: 20px 15px; 
+    background: white; 
+    overflow-y: auto; /* SCROLL UNIQUEMENT ICI */
+    -webkit-overflow-scrolling: touch; 
+    padding-bottom: 80px; /* Espace pour le clavier */
 }
 
 @media (min-width: 768px) {
-    .letter-grid { grid-template-columns: repeat(14, 35px); }
+    .workshop-area { width: 380px; flex: none; border-left: 2px solid var(--border); padding-bottom: 20px; height: 100vh; }
 }
 
-.cell {
-    aspect-ratio: 1;
-    border: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 13px;
-    cursor: pointer;
-    touch-action: manipulation; /* Accélère le clic tactile */
-}
-
-.cell.selected { background: var(--orange); color: white; }
-.cell.found { background: var(--green) !important; color: white; }
-
-/* Zone de saisie */
-.workshop-area {
-    padding: 15px;
-    background: white;
-    overflow-y: auto;
-    flex-shrink: 0;
-}
-
-.anagram-item {
-    background: #f0f4ff;
-    padding: 10px;
-    margin-bottom: 12px;
-    border-radius: 8px;
-}
-
-.word-input {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px; /* Taille minimale pour éviter le zoom iOS */
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    text-transform: uppercase;
-}
+/* Style des anagrammes et inputs */
+.workshop-area h3 { margin-top: 0; color: var(--dark); font-size: 1.4rem; }
+.hint { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px; }
+.anagram-item { background: #e1f5fe; padding: 15px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #b3e5fc; }
+.scrambled { display: block; font-weight: bold; color: var(--primary); margin-bottom: 10px; letter-spacing: 1px; font-size: 1.1rem; }
+.word-input { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #bdc3c7; border-radius: 4px; text-transform: uppercase; background: white; }
+.word-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.1); }
+.word-input:disabled { background-color: #f8f9fa; color: var(--success); }
 
 /* Modales */
-.modal-overlay, #login-overlay {
-    position: fixed; inset: 0;
-    background: rgba(26, 26, 46, 0.98);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 1000;
-}
-
-.login-box, .feedback-box {
-    background: white; padding: 25px;
-    width: 90%; max-width: 400px;
-    border-radius: 12px; text-align: center;
-}
-
-textarea {
-    width: 100%; margin-top: 10px; padding: 10px;
-    border-radius: 5px; border: 1px solid #ccc; font-size: 14px;
-}
-
-button {
-    width: 100%; padding: 12px; margin-top: 15px;
-    background: var(--blue); color: white; border: none;
-    border-radius: 6px; font-weight: bold; cursor: pointer;
-}
+#login-overlay, .modal-overlay { position: fixed; inset: 0; background: rgba(44, 62, 80, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+.login-box, .feedback-box { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+.login-box h2 { color: var(--primary); margin-top: 0; }
+.login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; transition: background 0.2s; }
+button:hover { background: #21618c; }
+button:disabled { background: #bdc3c7; cursor: not-allowed; }
+textarea { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid #ddd; resize: none; margin-bottom: 15px; font-size: 16px; }
