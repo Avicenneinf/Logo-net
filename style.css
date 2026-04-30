@@ -1,117 +1,285 @@
+/* =========================================
+   🔑 MISSION LOGO JUNIOR - CSS COMPLET ET CORRIGÉ
+   ========================================= */
+
 :root {
-    --blue: #4361ee;
-    --green: #2ecc71;
-    --dark: #1a1a2e;
-    --orange: #f39c12;
+    --primary: #FF6B6B; /* Rouge corail ludique */
+    --secondary: #4ECDC4; /* Turquoise frais */
+    --success: #27ae60; /* Vert succès */
+    --highlight: #f1c40f; /* Jaune surbrillance */
+    --accent: #F7FFF7; /* Blanc cassé doux */
+    --dark: #2C3E50; /* Bleu nuit pour le texte */
+    --border: #ddd; /* Gris bordure */
+    --shadow: rgba(0, 0, 0, 0.15);
 }
 
-* { box-sizing: border-box; }
+* { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+}
 
+/* --- 1. BASE DE LA PAGE AVEC DÉGRADÉ ANIMÉ --- */
 body, html {
-    margin: 0; padding: 0;
-    height: 100%; width: 100%;
-    font-family: 'Segoe UI', sans-serif;
-    background: #eef2f7;
-    overflow-x: hidden; /* Empêche le glissement horizontal */
-}
-
-/* Conteneur principal flexible */
-.app-container {
-    display: flex;
-    flex-direction: column; /* Vertical par défaut (Smartphone) */
-    height: 100vh;
-}
-
-/* Passage en mode horizontal pour Tablettes et PC */
-@media (min-width: 768px) {
-    .app-container { flex-direction: row; }
-    .workshop-area { width: 350px; border-left: 2px solid #ddd; }
-}
-
-/* Zone de la Grille */
-.grid-area {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    background: #ced6e0;
-}
-
-.letter-grid {
-    display: grid;
-    /* 14 colonnes qui s'adaptent à la largeur de l'écran mobile */
-    grid-template-columns: repeat(14, calc(95vw / 15)); 
-    gap: 3px;
-    background: white;
-    padding: 8px;
-    border-radius: 8px;
-}
-
-@media (min-width: 768px) {
-    .letter-grid { grid-template-columns: repeat(14, 35px); }
-}
-
-.cell {
-    aspect-ratio: 1;
-    border: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 13px;
-    cursor: pointer;
-    touch-action: manipulation; /* Accélère le clic tactile */
-}
-
-.cell.selected { background: var(--orange); color: white; }
-.cell.found { background: var(--green) !important; color: white; }
-
-/* Zone de saisie */
-.workshop-area {
-    padding: 15px;
-    background: white;
-    overflow-y: auto;
-    flex-shrink: 0;
-}
-
-.anagram-item {
-    background: #f0f4ff;
-    padding: 10px;
-    margin-bottom: 12px;
-    border-radius: 8px;
-}
-
-.word-input {
+    margin: 0; padding: 0; 
+    height: 100%; 
     width: 100%;
-    padding: 12px;
-    font-size: 16px; /* Taille minimale pour éviter le zoom iOS */
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    text-transform: uppercase;
+    /* Police plus ronde et amicale pour les enfants */
+    font-family: 'Quicksand', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    
+    /* Arrière-plan : Dégradé doux et joyeux */
+    background: linear-gradient(-45deg, #FF9A9E, #FAD0C4, #A1C4FD, #C2E9FB);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite; /* Animation du fond */
+    overflow: hidden; /* Empêche le scroll global du body */
 }
 
-/* Modales */
-.modal-overlay, #login-overlay {
-    position: fixed; inset: 0;
-    background: rgba(26, 26, 46, 0.98);
-    display: flex; justify-content: center; align-items: center;
+/* Animation du dégradé de fond */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- 2. ÉCRAN DE CONNEXION (OVERLAY) --- */
+#login-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
 }
 
-.login-box, .feedback-box {
-    background: white; padding: 25px;
-    width: 90%; max-width: 400px;
-    border-radius: 12px; text-align: center;
+/* --- 3. LA BOÎTE DE CONNEXION "BUBBLE" (LUDIQUE) --- */
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 30px; /* Angles très arrondis */
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    /* Ombre douce pour effet de profondeur (3D) */
+    box-shadow: 0 15px 35px var(--shadow);
+    border: 5px solid var(--accent); /* Bordure douce */
+    transition: transform 0.3s ease;
 }
 
-textarea {
-    width: 100%; margin-top: 10px; padding: 10px;
-    border-radius: 5px; border: 1px solid #ccc; font-size: 14px;
+/* Petit effet au survol de la boîte */
+.login-box:hover {
+    transform: translateY(-5px);
 }
 
-button {
-    width: 100%; padding: 12px; margin-top: 15px;
-    background: var(--blue); color: white; border: none;
-    border-radius: 6px; font-weight: bold; cursor: pointer;
+/* --- 4. TITRES ET TEXTES --- */
+.login-box h2 {
+    color: var(--primary);
+    margin-top: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    /* Petit effet d'ombre sur le texte */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
+
+.login-box h2::after {
+    content: ' 🐢'; /* Ajout d'un émoji tortue sympa */
+}
+
+.login-box p {
+    color: var(--dark);
+    margin-bottom: 25px;
+    font-size: 1rem;
+}
+
+/* --- 5. CHAMPS DE SAISIE (INPUTS) --- */
+.login-box input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px; /* Espace entre les champs */
+    border: 2px solid #E0E0E0;
+    border-radius: 15px; /* Inputs arrondis */
+    font-size: 16px;
+    background-color: #F9F9F9;
+    transition: all 0.2s;
+    font-family: inherit; /* Utilise Quicksand */
+}
+
+/* Style quand on clique dans l'input */
+.login-box input:focus {
+    outline: none;
+    border-color: var(--secondary);
+    background-color: white;
+    box-shadow: 0 0 10px rgba(78, 205, 196, 0.2);
+}
+
+/* Style spécifique pour l'input date pour qu'il soit joli */
+.login-box input[type="date"] {
+    color: #7F8C8D;
+    cursor: pointer;
+}
+
+/* --- 6. LE BOUTON "SUPER DÉMARRER" --- */
+.login-box button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    background: linear-gradient(135deg, var(--primary), #FF8E8E);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    /* Ombre sous le bouton */
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+    transition: all 0.2s;
+}
+
+/* Effets au survol du bouton */
+.login-box button:hover {
+    background: linear-gradient(135deg, #FF8E8E, var(--primary));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* Effet au clic */
+.login-box button:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.2);
+}
+
+/* =========================================
+   🎨 JEU PRINCIPAL (app-container)
+   ========================================= */
+
+.app-container { 
+    display: flex; 
+    flex-direction: column; 
+    height: 100vh; 
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Côte-à-côte sur grand écran */
+@media (min-width: 992px) {
+    .app-container { flex-direction: row; }
+}
+
+/* --- 1. ZONE DE LA GRILLE (Haut sur mobile, Gauche sur PC) --- */
+.grid-area {
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+    padding: 20px; 
+    background: #dfe6e9;
+    flex: none; /* Ne s'écrase pas */
+    position: relative;
+    z-index: 100;
+}
+
+/* Sur Mobile (Correctif Clavier) */
+@media (max-width: 991px) {
+    .grid-area {
+        height: 60vh; /* Fige la hauteur sur mobile */
+        border-bottom: 2px solid var(--border);
+    }
+}
+
+/* Sur Grand Écran */
+@media (min-width: 992px) {
+    .grid-area { 
+        flex: 1; /* Prend tout l'espace à gauche */
+        height: 100vh;
+        padding: 40px; /* Plus d'espace */
+    }
+}
+
+/* --- LA GRILLE ELLE-MÊME --- */
+.letter-grid { 
+    display: grid; 
+    /* Taille réactive sur mobile, fixe sur PC */
+    grid-template-columns: repeat(15, calc(90vw / 17)); 
+    gap: 2px; 
+    background: white; 
+    padding: 8px; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+@media (min-width: 992px) { 
+    .letter-grid { grid-template-columns: repeat(15, 35px); gap: 3px; } 
+}
+
+.cell { 
+    aspect-ratio: 1; 
+    border: 1px solid #eee; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: bold; 
+    font-size: 13px; 
+    cursor: pointer; 
+    background: white; 
+    transition: all 0.1s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@media (min-width: 992px) { .cell { font-size: 18px; } }
+
+.cell.selected { background: var(--highlight); transform: scale(1.1); color: #000;}
+.cell.found { background: var(--success) !important; color: white; }
+
+/* --- 2. ZONE DE L'ATELIER (Bas sur mobile, Droite sur PC) --- */
+.workshop-area { 
+    background: white; 
+    padding: 20px; 
+    overflow-y: auto; /* Autorise le scroll */
+    -webkit-overflow-scrolling: touch; 
+}
+
+/* Sur Mobile (Correctif Clavier) */
+@media (max-width: 991px) {
+    .workshop-area {
+        flex: 1; /* Prend le reste de la hauteur */
+        padding-bottom: 100px; /* Espace pour le clavier */
+    }
+}
+
+/* Sur Grand Écran */
+@media (min-width: 992px) {
+    .workshop-area { 
+        width: 400px; /* Largeur fixe à droite */
+        flex: none; 
+        height: 100vh;
+        border-left: 2px solid var(--border);
+    }
+}
+
+/* Éléments de l'atelier */
+.workshop-area h3 { margin-top: 0; color: var(--dark); font-size: 1.5rem; }
+.hint { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px; }
+
+.anagram-item { 
+    background: #e1f5fe; 
+    padding: 15px; 
+    margin-bottom: 15px; 
+    border-radius: 8px; 
+    border: 1px solid #b3e5fc;
+}
+
+.scrambled { font-weight: bold; color: var(--primary); font-size: 1.1rem; letter-spacing: 1px;}
+.word-input { 
+    width: 100%; padding: 12px; margin-top: 10px;
+    font-size: 16px; border: 2px solid #bdc3c7; border-radius: 4px; text-transform: uppercase; 
+    font-family: inherit;
+}
+.word-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1); }
+.word-input:disabled { background: #f8f9fa; color: var(--success); cursor: not-allowed;}
+
+/* Modales */
+.modal-overlay { position: fixed; inset: 0; background: rgba(44, 62, 80, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+.feedback-box { background: white; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 90%; max-width: 500px;}
+.feedback-box h3 { color: var(--primary); margin-top: 0; }
+.feedback-box button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; font-family: inherit;}
+textarea { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid #ddd; resize: none; margin-bottom: 15px; font-size: 16px; font-family: inherit;}
