@@ -1,98 +1,48 @@
-:root {
-    --primary: #4361ee;
-    --success: #2ecc71;
-    --error: #ff006e;
-    --bg: #f8f9fa;
-    --dark: #2b2d42;
-    /* Taille de cellule adaptative : environ 6.5% de la largeur de l'écran */
-    --cell-size: 6.5vw; 
-}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LOGO Junior - Mission Expert</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Écran de connexion -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>🔑 Connexion LOGO</h2>
+            <input type="text" id="massar-in" placeholder="Code Massar">
+            <input type="date" id="date-in">
+            <button onclick="authentifier()">Démarrer la mission</button>
+        </div>
+    </div>
 
-/* Pour les grands écrans (ordinateurs), on limite la taille */
-@media (min-width: 600px) {
-    :root { --cell-size: 35px; }
-}
+    <!-- Application principale -->
+    <div id="game-app" class="app-container" style="display:none;">
+        <main class="grid-area">
+            <div id="grid-container" class="letter-grid"></div>
+        </main>
+        
+        <aside class="workshop-area">
+            <h2>Atelier des Primitives</h2>
+            <p class="instr">Répare le mot à droite, puis trouve-le dans la grille.</p>
+            <div id="anagram-container"></div>
+        </aside>
+    </div>
 
-body { 
-    font-family: 'Segoe UI', system-ui, sans-serif; 
-    background: var(--bg); color: var(--dark);
-    margin: 0; padding: 5px;
-    display: flex; flex-direction: column; align-items: center;
-    overflow-x: hidden; /* Empêche le défilement horizontal bizarre */
-}
+    <!-- Fenêtre de bilan final -->
+    <div id="feedback-overlay" class="modal-overlay" style="display:none;">
+        <div class="feedback-box">
+            <h3>🎓 Bilan de la séquence  « Programmation LOGO » </h3>
+            <div class="feedback-question">
+                <p><strong>Quelles sont les compétences que tu as développées dans la séquence « Programmation LOGO » ?</strong></p>
+                <textarea id="user-feedback" rows="6" placeholder="Partage ici ce que tu as appris ou compris..."></textarea>
+            </div>
+            <button id="submit-btn" onclick="envoyerDonnees()">Transmettre au professeur</button>
+            <p id="status-msg"></p>
+        </div>
+    </div>
 
-.header { text-align: center; margin-bottom: 10px; }
-h1 { color: var(--primary); margin: 5px 0; font-size: 1.4rem; }
-
-.main-layout {
-    display: flex; 
-    flex-direction: column; /* Sur mobile, tout est l'un sous l'autre */
-    gap: 15px; 
-    align-items: center;
-    width: 100%;
-}
-
-@media (min-width: 900px) {
-    .main-layout { flex-direction: row; align-items: flex-start; }
-}
-
-/* Grille */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(14, var(--cell-size));
-    gap: 2px; background: white; padding: 5px;
-    border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.cell {
-    width: var(--cell-size); height: var(--cell-size);
-    background: #edf2f4; display: flex; align-items: center;
-    justify-content: center; cursor: pointer; font-weight: bold;
-    font-size: calc(var(--cell-size) * 0.45); /* Police proportionnelle à la cellule */
-    border-radius: 2px; user-select: none;
-}
-
-.cell.selected { background: #fee440; box-shadow: inset 0 0 0 1px #f9c74f; }
-.cell.found { background: var(--success); color: white; }
-
-/* Liste d'Anagrammes */
-#word-list {
-    background: white; padding: 10px; border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    width: 95%; max-width: 350px;
-}
-
-.anagram-container {
-    display: flex; align-items: center; margin-bottom: 6px;
-    padding: 6px; background: #f1f3f5; border-radius: 6px;
-}
-
-.scrambled-letters { display: flex; gap: 3px; flex-wrap: wrap; }
-
-.letter-box {
-    width: 28px; height: 28px; background: var(--primary);
-    color: white; display: flex; align-items: center;
-    justify-content: center; border-radius: 4px; cursor: pointer;
-    font-size: 13px; font-weight: bold;
-}
-
-.letter-box.active { background: var(--error); transform: scale(1.1); }
-.anagram-container.solved .letter-box { background: #4cc9f0; }
-.anagram-container.found-text { background: #d1fae5; opacity: 0.6; }
-.status-icon { margin-right: 8px; min-width: 20px; }
-
-/* Fenêtre finale */
-.modal {
-    display: none; position: fixed; z-index: 1000;
-    left: 0; top: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
-}
-
-.modal-content {
-    background: white; margin: 20% auto; padding: 20px;
-    width: 85%; max-width: 400px; border-radius: 15px; text-align: center;
-}
-
-.feedback-box { text-align: left; background: #f8f9fa; padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9rem; }
-.note { color: #e67e22; font-weight: bold; margin-top: 10px; }
-.btn-restart { background: var(--dark); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+    <script src="script.js"></script>
+</body>
+</html>
