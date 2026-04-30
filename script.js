@@ -1,6 +1,13 @@
+
 const FORMSPREE_URL = "https://formspree.io/f/xdabnvaa";
+
+// Liste des mots à trouver
+const primitives = ["FTORTUE", "REMPLIS", "FPOS", "POUR", "FIN", "NETTOIE", "FCC", "FEPAIS", "ELLIPSE", "SOIT", "DONNE", "REPETE", "SOMME", "DIFF"];
+
+// --- BASE DE DONNÉES ÉLÈVES ---
+// FORMAT STRICT : "AAAA-MM-JJ" (Ex: "2012-10-29")
 const eleves = [
-{ massar: "F161110881", nom: "BELAHMER Lina", date: "2010-10-15" },
+    { massar: "F161110881", nom: "BELAHMER Lina", date: "2010-10-15" },
 { massar: "F168074796", nom: "ALHAOUL MARWA", date: "2010-09-20" },
 { massar: "F170011181", nom: "SANANE FAROUK", date: "2012-01-19" },
 { massar: "F171068232", nom: "AIT OUSTI M.HAND YASSINE", date: "2011-10-11" },
@@ -47,77 +54,90 @@ const eleves = [
 { massar: "F179021214", nom: "NAKACH MOHAMED", date: "2011-01-01" }
 ];
 
-
-const primitives = ["FTORTUE", "REMPLIS", "FPOS", "POUR", "FIN", "NETTOIE", "FCC", "FEPAIS", "ELLIPSE", "SOIT", "DONNE", "REPETE", "SOMME", "DIFF"];
-
 let currentUser = null;
 let wordsStatus = {}; 
-let gridData = Array(14).fill().map(() => Array(14).fill(null));
+let gridData = Array(15).fill().map(() => Array(15).fill(null));
 
-// --- 1. CONNEXION ---
+// --- 1. FONCTION D'AUTHENTIFICATION (RÉPARÉE) ---
 function authentifier() {
-    const inputMassar = document.getElementById('massar-in').value.trim().toUpperCase();
-    currentUser = eleves.find(e => e.massar === inputMassar);
-    
+    const codeIn = document.getElementById('massar-in').value.trim().toUpperCase();
+    const dateIn = document.getElementById('date-in').value; 
+
+    console.log("Tentative de connexion - Code:", codeIn, "Date:", dateIn);
+
+    if (!codeIn || !dateIn) {
+        alert("🐢 Oups ! Entre ton Code Massar ET ta date de naissance.");
+        return; 
+    }
+
+    // Recherche avec nettoyage des deux côtés (saisie et base de données)
+    currentUser = eleves.find(e => {
+        const massarMatch = e.massar.trim().toUpperCase() === codeIn;
+        const dateMatch = e.date.trim() === dateIn;
+        return massarMatch && dateMatch;
+    });
+
     if (currentUser) {
         document.getElementById('login-overlay').style.display = 'none';
         document.getElementById('game-app').style.display = 'flex';
         initJeu();
     } else {
-        alert("Identifiant inconnu.");
+        alert("🐢 Désolé ! Ton Code Massar ou ta Date ne sont pas corrects. Réessaie !");
     }
 }
 
-// --- 2. INITIALISATION ---
+// --- 2. INITIALISATION DU JEU ---
 function initJeu() {
+    initAtelier();
+    placerMots();
+    dessinerGrille();
+}
+
+function initAtelier() {
     const container = document.getElementById('anagram-container');
+    container.innerHTML = ""; 
     primitives.forEach(word => {
         wordsStatus[word] = { unlocked: false, found: false };
         const div = document.createElement('div');
         div.className = 'anagram-item';
         const scrambled = word.split('').sort(() => Math.random() - 0.5).join('');
-        
         div.innerHTML = `
-            <strong>${scrambled}</strong>
+            <span class="scrambled">Lettres : ${scrambled}</span>
             <input type="text" class="word-input" id="input-${word}" 
-                   oninput="verifierAtelier('${word}')" placeholder="Répare le mot...">
+                   placeholder="Devine..." oninput="verifierAtelier('${word}')">
         `;
         container.appendChild(div);
     });
-    placerMots();
-    dessinerGrille();
 }
 
-// --- 3. LOGIQUE ATELIER ---
 function verifierAtelier(original) {
     const input = document.getElementById(`input-${original}`);
-    if (input.value.toUpperCase() === original) {
+    if (input.value.trim().toUpperCase() === original) {
         input.disabled = true;
-        input.style.borderColor = "var(--green)";
+        input.style.borderColor = "#27ae60";
         wordsStatus[original].unlocked = true;
     }
 }
 
-// --- 4. PLACEMENT AVEC ID UNIQUE ---
+// --- 3. LOGIQUE DE LA GRILLE ---
 function placerMots() {
+    gridData = Array(15).fill().map(() => Array(15).fill(null));
     primitives.forEach((word, idx) => {
         let placed = false;
         while (!placed) {
-            let isH = Math.random() > 0.5;
-            let r = Math.floor(Math.random() * (isH ? 14 : 14 - word.length));
-            let c = Math.floor(Math.random() * (isH ? 14 - word.length : 14));
-            
-            let canPlace = true;
+            let horizontal = Math.random() > 0.5;
+            let r = Math.floor(Math.random() * (horizontal ? 15 : 15 - word.length));
+            let c = Math.floor(Math.random() * (horizontal ? 15 - word.length : 15));
+            let possible = true;
             for(let i=0; i<word.length; i++) {
-                if (gridData[isH ? r : r+i][isH ? c+i : c]) { canPlace = false; break; }
+                if (gridData[horizontal ? r : r+i][horizontal ? c+i : c]) {
+                    possible = false; break;
+                }
             }
-            
-            if (canPlace) {
+            if (possible) {
                 for(let i=0; i<word.length; i++) {
-                    gridData[isH ? r : r+i][isH ? c+i : c] = { 
-                        char: word[i], 
-                        word: word, 
-                        id: idx // Identifiant unique du mot
+                    gridData[horizontal ? r : r+i][horizontal ? c+i : c] = { 
+                        char: word[i], wordName: word, wordId: idx 
                     };
                 }
                 placed = true;
@@ -126,83 +146,51 @@ function placerMots() {
     });
 }
 
-// --- 5. AFFICHAGE ---
 function dessinerGrille() {
     const container = document.getElementById('grid-container');
     container.innerHTML = "";
-    for (let r = 0; r < 14; r++) {
-        for (let c = 0; c < 14; c++) {
+    for (let r = 0; r < 15; r++) {
+        for (let c = 0; c < 15; c++) {
             const cell = document.createElement('div');
             cell.className = 'cell';
             const data = gridData[r][c];
-            
             cell.textContent = data ? data.char : String.fromCharCode(65 + Math.floor(Math.random() * 26));
-            if (data) cell.setAttribute('data-id', data.id);
-            
-            cell.onclick = () => cliquerCellule(cell, r, c);
+            if (data) cell.setAttribute('data-id', data.wordId);
+            cell.onclick = () => cliquerCellule(cell, data);
             container.appendChild(cell);
         }
     }
 }
 
-// --- 6. INTERACTION ---
-function cliquerCellule(cell, r, c) {
-    const data = gridData[r][c];
-    if (!data || !wordsStatus[data.word].unlocked) return;
-
+function cliquerCellule(cell, data) {
+    if (!data || !wordsStatus[data.wordName].unlocked) return;
     cell.classList.add('selected');
-    
-    const wordId = data.id;
-    const allCells = document.querySelectorAll(`.cell[data-id="${wordId}"]`);
-    const selectedCells = document.querySelectorAll(`.cell[data-id="${wordId}"].selected`);
-
-    if (allCells.length === selectedCells.length) {
-        allCells.forEach(el => {
-            el.classList.remove('selected');
-            el.classList.add('found');
-        });
-        wordsStatus[data.word].found = true;
+    const id = data.wordId;
+    const wordCells = document.querySelectorAll(`.cell[data-id="${id}"]`);
+    const selectedCells = document.querySelectorAll(`.cell[data-id="${id}"].selected`);
+    if (wordCells.length === selectedCells.length) {
+        wordCells.forEach(el => { el.classList.remove('selected'); el.classList.add('found'); });
+        wordsStatus[data.wordName].found = true;
         verifierFin();
     }
 }
 
 function verifierFin() {
     if (primitives.every(w => wordsStatus[w].found)) {
-        setTimeout(() => {
-            document.getElementById('feedback-overlay').style.display = 'flex';
-        }, 500);
+        setTimeout(() => { document.getElementById('feedback-overlay').style.display = 'flex'; }, 500);
     }
 }
 
-// --- 7. ENVOI ---
 async function envoyerDonnees() {
     const feedback = document.getElementById('user-feedback').value;
-    if (feedback.trim().length < 10) {
-        alert("Explique un peu plus tes compétences !");
-        return;
-    }
-
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
-    btn.textContent = "Envoi en cours...";
-
     try {
         const response = await fetch(FORMSPREE_URL, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                eleve: currentUser.nom,
-                massar: currentUser.massar,
-                competences: feedback
-            })
+            body: JSON.stringify({ eleve: currentUser.nom, massar: currentUser.massar, bilan: feedback })
         });
-
-        if (response.ok) {
-            alert("Bilan envoyé avec succès !");
-            location.reload();
-        }
-    } catch (e) {
-        alert("Erreur lors de l'envoi.");
-        btn.disabled = false;
-    }
+        if (response.ok) { alert("Super ! Bilan envoyé."); location.reload(); }
+    } catch (e) { alert("Erreur d'envoi."); btn.disabled = false; }
 }
