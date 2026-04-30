@@ -5,79 +5,113 @@
     --orange: #f39c12;
 }
 
+* { box-sizing: border-box; }
+
 body, html {
-    margin: 0; padding: 0; height: 100vh;
+    margin: 0; padding: 0;
+    height: 100%; width: 100%;
     font-family: 'Segoe UI', sans-serif;
     background: #eef2f7;
-    touch-action: manipulation;
+    overflow-x: hidden; /* Empêche le glissement horizontal */
 }
 
-/* Mise en page adaptative (Mobile First) */
-.app-container { display: flex; flex-direction: column; height: 100vh; }
+/* Conteneur principal flexible */
+.app-container {
+    display: flex;
+    flex-direction: column; /* Vertical par défaut (Smartphone) */
+    height: 100vh;
+}
 
+/* Passage en mode horizontal pour Tablettes et PC */
 @media (min-width: 768px) {
     .app-container { flex-direction: row; }
     .workshop-area { width: 350px; border-left: 2px solid #ddd; }
 }
 
-/* Grille de lettres */
+/* Zone de la Grille */
 .grid-area {
-    flex: 1; display: flex; justify-content: center;
-    align-items: center; padding: 10px; overflow: hidden;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: #ced6e0;
 }
 
 .letter-grid {
     display: grid;
-    grid-template-columns: repeat(14, minmax(20px, 35px));
-    gap: 4px;
-    background: white; padding: 10px; border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    /* 14 colonnes qui s'adaptent à la largeur de l'écran mobile */
+    grid-template-columns: repeat(14, calc(95vw / 15)); 
+    gap: 3px;
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+    .letter-grid { grid-template-columns: repeat(14, 35px); }
 }
 
 .cell {
     aspect-ratio: 1;
-    border: 1px solid #ddd;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: bold; font-size: 0.9em; cursor: pointer;
-    background: #fff; transition: background 0.3s;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    touch-action: manipulation; /* Accélère le clic tactile */
 }
 
 .cell.selected { background: var(--orange); color: white; }
-.cell.found { background: var(--green) !important; color: white; border-color: var(--green); }
+.cell.found { background: var(--green) !important; color: white; }
 
-/* Atelier */
-.workshop-area { padding: 20px; background: white; overflow-y: auto; }
-.anagram-item { background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
-.scrambled { font-family: monospace; color: var(--blue); font-weight: bold; font-size: 1.1em; }
-
-.word-input {
-    width: 100%; padding: 12px; margin-top: 8px;
-    border: 2px solid #ccc; border-radius: 5px;
-    font-size: 16px; /* Empêche le zoom forcé sur mobile */
-    text-transform: uppercase; box-sizing: border-box;
+/* Zone de saisie */
+.workshop-area {
+    padding: 15px;
+    background: white;
+    overflow-y: auto;
+    flex-shrink: 0;
 }
 
-.word-input:disabled { border-color: var(--green); background: #e8f5e9; }
+.anagram-item {
+    background: #f0f4ff;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+}
 
-/* Fenêtres Modales */
-#login-overlay, .modal-overlay {
-    position: fixed; inset: 0; background: var(--dark);
-    display: flex; justify-content: center; align-items: center; z-index: 1000;
+.word-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px; /* Taille minimale pour éviter le zoom iOS */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+
+/* Modales */
+.modal-overlay, #login-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26, 26, 46, 0.98);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
 }
 
 .login-box, .feedback-box {
-    background: white; padding: 25px; border-radius: 15px;
-    width: 90%; max-width: 450px; text-align: center;
+    background: white; padding: 25px;
+    width: 90%; max-width: 400px;
+    border-radius: 12px; text-align: center;
 }
 
 textarea {
-    width: 100%; padding: 10px; border: 1px solid #ccc;
-    border-radius: 5px; resize: none; font-family: inherit;
-    box-sizing: border-box; margin-top: 10px;
+    width: 100%; margin-top: 10px; padding: 10px;
+    border-radius: 5px; border: 1px solid #ccc; font-size: 14px;
 }
 
 button {
     width: 100%; padding: 12px; margin-top: 15px;
-    border: none; border-radius: 6px; cursor: pointer;
-    background: var(--blue); color: white; font-weight: bold;
+    background: var(--blue); color: white; border: none;
+    border-radius: 6px; font-weight: bold; cursor: pointer;
 }
