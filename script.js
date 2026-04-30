@@ -52,35 +52,36 @@ const primitives = ["FTORTUE", "REMPLIS", "FPOS", "POUR", "FIN", "NETTOIE", "FCC
 
 let currentUser = null;
 let wordsStatus = {}; 
-let gridData = Array(14).fill().map(() => Array(14).fill(null));
+let gridData = Array(15).fill().map(() => Array(15).fill(null));
 
-// --- 1. CONNEXION ---
+// 1. Authentification
 function authentifier() {
-    const inputMassar = document.getElementById('massar-in').value.trim().toUpperCase();
-    currentUser = eleves.find(e => e.massar === inputMassar);
-    
+    const code = document.getElementById('massar-in').value.trim().toUpperCase();
+    currentUser = eleves.find(e => e.massar === code);
     if (currentUser) {
         document.getElementById('login-overlay').style.display = 'none';
         document.getElementById('game-app').style.display = 'flex';
         initJeu();
     } else {
-        alert("Identifiant inconnu.");
+        alert("Identifiant non reconnu.");
     }
 }
 
-// --- 2. INITIALISATION ---
+// 2. Préparation de l'atelier
 function initJeu() {
     const container = document.getElementById('anagram-container');
-    primitives.forEach(word => {
+    motsTexteur.forEach(word => {
         wordsStatus[word] = { unlocked: false, found: false };
         const div = document.createElement('div');
         div.className = 'anagram-item';
+        
+        // Mélange des lettres
         const scrambled = word.split('').sort(() => Math.random() - 0.5).join('');
         
         div.innerHTML = `
-            <strong>${scrambled}</strong>
+            <span class="scrambled">Lettres : ${scrambled}</span>
             <input type="text" class="word-input" id="input-${word}" 
-                   oninput="verifierAtelier('${word}')" placeholder="Répare le mot...">
+                   placeholder="Devine le mot..." oninput="verifierAtelier('${word}')">
         `;
         container.appendChild(div);
     });
@@ -88,36 +89,40 @@ function initJeu() {
     dessinerGrille();
 }
 
-// --- 3. LOGIQUE ATELIER ---
+// 3. Validation de l'anagramme
 function verifierAtelier(original) {
     const input = document.getElementById(`input-${original}`);
+    if (input.value.toUpperCase() === (original === "ENTETE" ? "EN-TÊTE" : original).replace("-", "").replace("Ê", "E")) {
+        // Note : On simplifie la saisie pour l'élève (sans accent)
+    }
+    // Version simplifiée pour la comparaison directe :
     if (input.value.toUpperCase() === original) {
         input.disabled = true;
-        input.style.borderColor = "var(--green)";
+        input.style.borderColor = "var(--success)";
         wordsStatus[original].unlocked = true;
     }
 }
 
-// --- 4. PLACEMENT AVEC ID UNIQUE ---
+// 4. Algorithme de placement avec ID UNIQUE (Anti-bug doublons)
 function placerMots() {
-    primitives.forEach((word, idx) => {
+    motsTexteur.forEach((word, idx) => {
         let placed = false;
         while (!placed) {
-            let isH = Math.random() > 0.5;
-            let r = Math.floor(Math.random() * (isH ? 14 : 14 - word.length));
-            let c = Math.floor(Math.random() * (isH ? 14 - word.length : 14));
+            let horizontal = Math.random() > 0.5;
+            let r = Math.floor(Math.random() * (horizontal ? 15 : 15 - word.length));
+            let c = Math.floor(Math.random() * (horizontal ? 15 - word.length : 15));
             
-            let canPlace = true;
+            let possible = true;
             for(let i=0; i<word.length; i++) {
-                if (gridData[isH ? r : r+i][isH ? c+i : c]) { canPlace = false; break; }
+                if (gridData[horizontal ? r : r+i][horizontal ? c+i : c]) {
+                    possible = false; break;
+                }
             }
             
-            if (canPlace) {
+            if (possible) {
                 for(let i=0; i<word.length; i++) {
-                    gridData[isH ? r : r+i][isH ? c+i : c] = { 
-                        char: word[i], 
-                        word: word, 
-                        id: idx // Identifiant unique du mot
+                    gridData[horizontal ? r : r+i][horizontal ? c+i : c] = { 
+                        char: word[i], wordName: word, wordId: idx 
                     };
                 }
                 placed = true;
@@ -126,65 +131,57 @@ function placerMots() {
     });
 }
 
-// --- 5. AFFICHAGE ---
+// 5. Rendu de la grille
 function dessinerGrille() {
     const container = document.getElementById('grid-container');
     container.innerHTML = "";
-    for (let r = 0; r < 14; r++) {
-        for (let c = 0; c < 14; c++) {
+    for (let r = 0; r < 15; r++) {
+        for (let c = 0; c < 15; c++) {
             const cell = document.createElement('div');
             cell.className = 'cell';
             const data = gridData[r][c];
-            
             cell.textContent = data ? data.char : String.fromCharCode(65 + Math.floor(Math.random() * 26));
-            if (data) cell.setAttribute('data-id', data.id);
-            
+            if (data) cell.setAttribute('data-id', data.wordId);
             cell.onclick = () => cliquerCellule(cell, r, c);
             container.appendChild(cell);
         }
     }
 }
 
-// --- 6. INTERACTION ---
+// 6. Gestion du clic
 function cliquerCellule(cell, r, c) {
     const data = gridData[r][c];
-    if (!data || !wordsStatus[data.word].unlocked) return;
+    if (!data || !wordsStatus[data.wordName].unlocked) return;
 
     cell.classList.add('selected');
-    
-    const wordId = data.id;
-    const allCells = document.querySelectorAll(`.cell[data-id="${wordId}"]`);
-    const selectedCells = document.querySelectorAll(`.cell[data-id="${wordId}"].selected`);
+    const id = data.wordId;
+    const wordCells = document.querySelectorAll(`.cell[data-id="${id}"]`);
+    const selectedCells = document.querySelectorAll(`.cell[data-id="${id}"].selected`);
 
-    if (allCells.length === selectedCells.length) {
-        allCells.forEach(el => {
+    if (wordCells.length === selectedCells.length) {
+        wordCells.forEach(el => {
             el.classList.remove('selected');
             el.classList.add('found');
         });
-        wordsStatus[data.word].found = true;
+        wordsStatus[data.wordName].found = true;
         verifierFin();
     }
 }
 
 function verifierFin() {
-    if (primitives.every(w => wordsStatus[w].found)) {
-        setTimeout(() => {
-            document.getElementById('feedback-overlay').style.display = 'flex';
-        }, 500);
+    if (motsTexteur.every(w => wordsStatus[w].found)) {
+        setTimeout(() => document.getElementById('feedback-overlay').style.display = 'flex', 600);
     }
 }
 
-// --- 7. ENVOI ---
+// 7. Envoi Formspree
 async function envoyerDonnees() {
     const feedback = document.getElementById('user-feedback').value;
-    if (feedback.trim().length < 10) {
-        alert("Explique un peu plus tes compétences !");
-        return;
-    }
-
+    if (feedback.trim().length < 10) return alert("Décris un peu plus tes compétences !");
+    
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
-    btn.textContent = "Envoi en cours...";
+    btn.textContent = "Envoi...";
 
     try {
         const response = await fetch(FORMSPREE_URL, {
@@ -192,17 +189,16 @@ async function envoyerDonnees() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 eleve: currentUser.nom,
-                massar: currentUser.massar,
-                competences: feedback
+                bilan: feedback,
+                sujet: "Traitement de texte"
             })
         });
-
         if (response.ok) {
-            alert("Bilan envoyé avec succès !");
+            alert("Bilan envoyé ! Bravo.");
             location.reload();
         }
     } catch (e) {
-        alert("Erreur lors de l'envoi.");
         btn.disabled = false;
+        alert("Erreur de connexion.");
     }
 }
