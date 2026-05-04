@@ -10,7 +10,6 @@ const eleves = [
     { massar: "F161110881", nom: "BELAHMER Lina", date: "2010-10-15" },
 { massar: "F168074796", nom: "ALHAOUL MARWA", date: "2010-09-20" },
 { massar: "F170011181", nom: "SANANE FAROUK", date: "2012-01-19" },
-{ massar: "F171068232", nom: "AIT OUSTI M.HAND YASSINE", date: "2011-10-11" },
 { massar: "F171068247", nom: "SAIDY WAFAA", date: "2011-09-29" },
 { massar: "F171068276", nom: "ERREZYQY MALAK", date: "2012-01-18" },
 { massar: "F172046836", nom: "EL KARMY GHITA", date: "2011-04-23" },
