@@ -7,7 +7,7 @@ const primitives = ["FTORTUE", "REMPLIS", "FPOS", "POUR", "FIN", "NETTOIE", "FCC
 // --- BASE DE DONNÉES ÉLÈVES ---
 // FORMAT STRICT : "AAAA-MM-JJ" (Ex: "2012-10-29")
 const eleves = [
-    { massar: "F161110881", nom: "BELAHMER Lina", date: "2010-10-15" },
+{ massar: "F161110881", nom: "BELAHMER Lina", date: "2010-10-15" },
 { massar: "F168074796", nom: "ALHAOUL MARWA", date: "2010-09-20" },
 { massar: "F170011181", nom: "SANANE FAROUK", date: "2012-01-19" },
 { massar: "F171068247", nom: "SAIDY WAFAA", date: "2011-09-29" },
