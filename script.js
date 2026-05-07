@@ -35,7 +35,6 @@ const eleves = [
 { massar: "R156070154", nom: "SEKINE MAROUANE", date: "2009-07-15" },
 { massar: "F171105685", nom: "Akram RAYASS", date: "2011-05-03" },
 { massar: "F173008638", nom: "DERISSI MOHAMED REDA", date: "2011-11-19" },
-{ massar: "F173106875", nom: "BIYI MUSTAFA", date: "2012-02-02" },
 { massar: "F173107514", nom: "NFISSI ADAM", date: "2012-02-10" },
 { massar: "F175049220", nom: "Boutat Yasser", date: "2011-06-27" },
 { massar: "F176021647", nom: "BENJAMAA OMAR", date: "2011-04-07" },
