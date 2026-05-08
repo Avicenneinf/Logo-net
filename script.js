@@ -15,8 +15,6 @@ const eleves = [
 { massar: "F172046836", nom: "EL KARMY GHITA", date: "2011-04-23" },
 { massar: "F172068237", nom: "EL KAMASSI HASNAA", date: "2011-07-14" },
 { massar: "F172162595", nom: "ABOUFARAH MOUAD", date: "2012-03-21" },
-{ massar: "F172217513", nom: "ELKABIR ZAKARIA", date: "2012-02-18" },
-{ massar: "F173068235", nom: "ASOUAR HAMZA", date: "2012-01-09" },
 { massar: "F173068246", nom: "BEL HARKATI OUISSAM", date: "2011-12-27" },
 { massar: "F173184557", nom: "EL AOUFI Hajar", date: "2011-12-09" },
 { massar: "F174068275", nom: "TAJ imad eddine", date: "2011-05-27" },
