@@ -20,7 +20,6 @@ const eleves = [
 { massar: "F174068275", nom: "TAJ imad eddine", date: "2011-05-27" },
 { massar: "F174175001", nom: "CHEDDAD SALMA", date: "2011-06-02" },
 { massar: "F174180656", nom: "LAAROUSSI RIHAB", date: "2011-05-01" },
-{ massar: "F175081649", nom: "EL BERHOUMI OUSSAMA", date: "2011-11-14" },
 { massar: "F175145444", nom: "BATAL YOUNES", date: "2011-12-01" },
 { massar: "F175153451", nom: "LAHKIM Ali", date: "2011-08-10" },
 { massar: "F176068229", nom: "BOUMALENE MANAR", date: "2012-03-16" },
